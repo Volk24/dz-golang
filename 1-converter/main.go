@@ -3,11 +3,28 @@ package main
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
-const usdEur float64 = 0.94691
-const usdRub float64 = 100.0
-const eurRub float64 = usdEur * usdRub
+const (
+	usdEur float64 = 0.94691
+	usdRub float64 = 100.0
+	eurRub float64 = usdEur * usdRub
+)
+
+var exchangeRates = map[string]map[string]float64{
+	"USD": {
+		"EUR": usdEur,
+		"RUB": usdRub,
+	},
+	"EUR": {
+		"RUB": eurRub,
+	},
+	"RUB": {
+		"USD": 1 / usdRub,
+		"EUR": 1 / eurRub,
+	},
+}
 
 func main() {
 	for {
@@ -42,7 +59,7 @@ func userInput() (string, error) {
 	var currency string
 	fmt.Print("Введите название валюты (USD/EUR/RUB):")
 	fmt.Scan(&currency)
-	if currency == "Usd" || currency == "usd" || currency == "Eur" || currency == "eur" || currency == "Rub" || currency == "rub" {
+	if _, valid := exchangeRates[currency]; valid {
 		return currency, nil
 	} else {
 		return "", errors.New("Такой валюты нет! Введите заново")
@@ -60,33 +77,25 @@ func numberInput() (float64, error) {
 	}
 }
 
-func targetCurrency(currencies string) (string, error) {
-	switch {
-	case currencies == "Usd" || currencies == "usd":
-		fmt.Println("Выберете подходящею валюту (EUR, RUB)")
-		fmt.Scan(&currencies)
-	case currencies == "Eur" || currencies == "eur":
-		fmt.Println("Выберете подходящею валюту (USD, RUB)")
-		fmt.Scan(&currencies)
-	case currencies == "Rub" || currencies == "rub":
-		fmt.Println("Выберете подходящею валюту (USD, EUR)")
-		fmt.Scan(&currencies)
-	default:
-		return "", errors.New("Нет подходящий валюты")
+func targetCurrency(input string) (string, error) {
+	var target string
+	fmt.Printf("Выберете валюту для обмена на %s (доступные варианты:", input)
+	for currency := range exchangeRates[input] {
+		fmt.Printf("%s", currency)
 	}
-	return currencies, nil
+	fmt.Println("):")
+	fmt.Scan(&target)
+	target = strings.ToUpper(target)
+	if _, valid := exchangeRates[input][target]; valid {
+		return target, nil
+	}
+	return "", errors.New("Неправильный выбор валюты!")
 }
 
-func calculatorCurrencies(number float64, user, targetCurrency string)  error {
-	switch {
-	case user == "Usd" || user== "usd" && targetCurrency == "EUR" || targetCurrency == "eur":
-		fmt.Println(number * usdEur)
-	case user == "Usd" || user == "usd" && targetCurrency == "Rub" || targetCurrency == "rub":
-		fmt.Println(number * usdRub)
-	case user == "Eur" || user == "eur" && targetCurrency == "Rub" || targetCurrency == "rub":
-		fmt.Println(number * eurRub)
-	default:
-		return errors.New("Неправильные вычисления")
+func calculatorCurrencies(number float64, user, targetCurrency string) error {
+	if rate, ok := exchangeRates[user][targetCurrency]; ok {
+		fmt.Printf("Результат: %.2f %s\n", number*rate, targetCurrency)
+		return nil
 	}
-	return nil
+	return errors.New("Неправильные вычисления")
 }
