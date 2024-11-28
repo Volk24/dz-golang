@@ -5,12 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
 func main() {
 	for {
-		inpud, err := userInputOperation()
+		input, err := userInputOperation()
 		if err != nil {
 			fmt.Print(err)
 			continue
@@ -20,8 +21,14 @@ func main() {
 		if err != nil {
 			fmt.Print(err)
 			continue
+		}
+
+		operatic, err := translateInt(number)
+		if err != nil {
+			fmt.Print(err)
+			continue
 		} else {
-			fmt.Println(inpud, number)
+			fmt.Print(input, operatic)
 			break
 		}
 	}
@@ -38,17 +45,30 @@ func userInputOperation() (string, error) {
 	}
 }
 
-func numberInput() ([]string, error) {
+func numberInput() (string, error) {
 	fmt.Print("Введите числа через (,): ")
-	numbers, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-	numbers = strings.TrimSpace(numbers)
-	if numbers == "" {
-		return nil, errors.New("Ввод чисел не правильный")
+	scanner, _ := bufio.NewReader(os.Stdin).ReadString('\n')
+	if scanner == "" {
+		return "", errors.New("Ввод чисел не правильный")
 	} else {
-		num := strings.Split(numbers, ",")
-		for v := range num {
-			num[v] = strings.TrimSpace(num[v])
-		}
-		return num, nil
+		return scanner, nil
 	}
 }
+
+func translateInt(scanner string) ([]int, error) {
+	scanner = strings.TrimSpace(scanner)
+	number := strings.Split(scanner, ",")
+	var nums []int
+	for _, str := range number {
+		str = strings.TrimSpace(str)
+		num, err := strconv.Atoi(str)
+		if err != nil {
+			return nil, errors.New("Не удалось перевести строку в число")
+		} else {
+			nums = append(nums, num)
+		}
+	}
+	return nums, nil
+}
+
+func calculator(userInput string, nums []int) (int, error) {}
