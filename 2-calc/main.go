@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -27,8 +28,14 @@ func main() {
 		if err != nil {
 			fmt.Print(err)
 			continue
+		}
+
+		calculators, err := calculator(input, operatic)
+		if err != nil {
+			fmt.Print(err)
+			continue
 		} else {
-			fmt.Print(input, operatic)
+			fmt.Println(calculators)
 			break
 		}
 	}
@@ -71,4 +78,38 @@ func translateInt(scanner string) ([]int, error) {
 	return nums, nil
 }
 
-func calculator(userInput string, nums []int) (int, error) {}
+func calculator(userInput string, nums []int) (int, error) {
+	switch userInput {
+	case "AVG":
+		if len(nums) == 0 {
+			return 0, errors.New("Нет чисел")
+		}
+		sum := 0
+		for _, num := range nums {
+			sum += num
+		}
+		result := sum / len(nums)
+		return result, nil
+
+	case "SUM":
+		sum := 0
+		for _, num := range nums {
+			sum += num
+		}
+		return sum, nil
+
+	case "MED":
+		sort.Ints(nums)
+		result := len(nums)
+		if result%2 == 1 {
+			return nums[result/2], nil
+		} else {
+			mid1 := nums[result/2-1]
+			mid2 := nums[result/2]
+			return (mid1 + mid2) / 2, nil
+		}
+
+	default: 
+		return 0, errors.New("Ошибка в вычислениях")
+	}
+}
