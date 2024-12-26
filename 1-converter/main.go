@@ -31,6 +31,7 @@ func main() {
 
 	for {
 		input, err := userInput(&exchangeRates)
+
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -42,12 +43,15 @@ func main() {
 		}
 
 		currency, err := targetCurrency(input, &exchangeRates)
+
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
 
+
 		err = calculatorCurrencies(numbers, input, currency, &exchangeRates)
+    
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -56,6 +60,7 @@ func main() {
 		}
 	}
 }
+
 
 func userInput(exchangeRates *course) (string, error) {
 	var currency string
@@ -87,12 +92,14 @@ func targetCurrency(input string, exchangeRates *course) (string, error) {
 	}
 	fmt.Println("):")
 	fmt.Scan(&target)
+
 	target = strings.ToUpper(input)
 	if _, valid := (*exchangeRates)[input][target]; valid {
 		return target, nil
 	}
 	return "", errors.New("Неправильный выбор валюты!")
 }
+
 
 func calculatorCurrencies(number float64, user, targetCurrency string, exchangeRates *course) error {
 	if rate, ok := (*exchangeRates)[user][targetCurrency]; ok {
