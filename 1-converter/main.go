@@ -88,18 +88,17 @@ func targetCurrency(input string, exchangeRates *course) (string, error) {
 	var target string
 	fmt.Printf("Выберите валюту для обменя на %s (доступные варианты:", input)
 	for currency := range (*exchangeRates)[input] {
-		fmt.Printf("%s", currency)
+		fmt.Printf("%s ", currency)
 	}
+
 	fmt.Println("):")
 	fmt.Scan(&target)
-
-	target = strings.ToUpper(input)
+	target = strings.ToUpper(target)
 	if _, valid := (*exchangeRates)[input][target]; valid {
 		return target, nil
 	}
 	return "", errors.New("Неправильный выбор валюты!")
 }
-
 
 func calculatorCurrencies(number float64, user, targetCurrency string, exchangeRates *course) error {
 	if rate, ok := (*exchangeRates)[user][targetCurrency]; ok {
