@@ -12,23 +12,26 @@ const (
 	eurRub float64 = usdEur * usdRub
 )
 
-var exchangeRates = map[string]map[string]float64{
-	"USD": {
-		"EUR": usdEur,
-		"RUB": usdRub,
-	},
-	"EUR": {
-		"RUB": eurRub,
-	},
-	"RUB": {
-		"USD": 1 / usdRub,
-		"EUR": 1 / eurRub,
-	},
-}
+type course = map[string]map[string]float64
 
 func main() {
+	exchangeRates := course{
+		"USD": {
+			"EUR": usdEur,
+			"RUB": usdRub,
+		},
+		"EUR": {
+			"RUB": eurRub,
+		},
+		"RUB": {
+			"USD": 1 / usdRub,
+			"EUR": 1 / usdEur,
+		},
+	}
+
 	for {
-		input, err := userInput()
+		input, err := userInput(&exchangeRates)
+
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -39,13 +42,16 @@ func main() {
 			continue
 		}
 
-		currency, err := targetCurrency(input)
+		currency, err := targetCurrency(input, &exchangeRates)
+
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
 
-		err = calculatorCurrencies(numbers, input, currency)
+
+		err = calculatorCurrencies(numbers, input, currency, &exchangeRates)
+    
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -55,11 +61,12 @@ func main() {
 	}
 }
 
-func userInput() (string, error) {
+
+func userInput(exchangeRates *course) (string, error) {
 	var currency string
 	fmt.Print("Введите название валюты (USD/EUR/RUB):")
 	fmt.Scan(&currency)
-	if _, valid := exchangeRates[currency]; valid {
+	if _, valid := (*exchangeRates)[currency]; valid {
 		return currency, nil
 	} else {
 		return "", errors.New("Такой валюты нет! Введите заново")
@@ -77,23 +84,24 @@ func numberInput() (float64, error) {
 	}
 }
 
-func targetCurrency(input string) (string, error) {
+func targetCurrency(input string, exchangeRates *course) (string, error) {
 	var target string
-	fmt.Printf("Выберете валюту для обмена на %s (доступные варианты:", input)
-	for currency := range exchangeRates[input] {
-		fmt.Printf("%s", currency)
+	fmt.Printf("Выберите валюту для обменя на %s (доступные варианты:", input)
+	for currency := range (*exchangeRates)[input] {
+		fmt.Printf("%s ", currency)
 	}
+
 	fmt.Println("):")
 	fmt.Scan(&target)
 	target = strings.ToUpper(target)
-	if _, valid := exchangeRates[input][target]; valid {
+	if _, valid := (*exchangeRates)[input][target]; valid {
 		return target, nil
 	}
 	return "", errors.New("Неправильный выбор валюты!")
 }
 
-func calculatorCurrencies(number float64, user, targetCurrency string) error {
-	if rate, ok := exchangeRates[user][targetCurrency]; ok {
+func calculatorCurrencies(number float64, user, targetCurrency string, exchangeRates *course) error {
+	if rate, ok := (*exchangeRates)[user][targetCurrency]; ok {
 		fmt.Printf("Результат: %.2f %s\n", number*rate, targetCurrency)
 		return nil
 	}
