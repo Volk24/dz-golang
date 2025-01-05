@@ -7,17 +7,17 @@ import (
 )
 
 type bin struct {
-	id string
-	private bool
+	id        string
+	private   bool
 	createdAt time.Time
-	name string
+	name      string
 }
 
 type BinList struct {
-	bins [] bin
+	bins []bin
 }
 
-func newBin(id, name string, private bool) (*bin, error)  {
+func newBin(id, name string, private bool) (*bin, error) {
 	if id == "" {
 		return nil, errors.New("INVALID_ID")
 	}
@@ -27,10 +27,10 @@ func newBin(id, name string, private bool) (*bin, error)  {
 	}
 
 	newBin := &bin{
-		id: id,
-		private: private,
+		id:        id,
+		private:   private,
 		createdAt: time.Now(),
-		name: name,
+		name:      name,
 	}
 	return newBin, nil
 }
@@ -46,7 +46,7 @@ func main() {
 
 	binList := BinList{}
 
-	newBin , err := newBin(id, name, private) 
+	newBin, err := newBin(id, name, private)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -55,14 +55,13 @@ func main() {
 	binList.addBin(*newBin)
 	fmt.Printf("id: %s", "Name: %s", "Private: %t", "CreatedAt: %s\n", newBin.id, newBin.name, newBin.private, newBin.createdAt)
 
-	
 }
 
 func promptData(prompt string) string {
 	fmt.Print(prompt + ": ")
 	var res string
 	fmt.Scanln(&res)
-	return res 
+	return res
 }
 
 func promptBool(prompt string) bool {
