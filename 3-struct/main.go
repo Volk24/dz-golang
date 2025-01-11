@@ -3,7 +3,15 @@ package main
 import (
 	"fmt"
 	"struct/bins"
+	"struct/file"
+	"struct/storage"
 )
+
+type Assembly interface {
+	bins.Bins
+	file.Files
+	storage.Storage
+}
 
 func main() {
 	id := promptData("Введите id")

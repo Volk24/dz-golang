@@ -7,6 +7,13 @@ import (
 	"struct/bins"
 )
 
+type Storage interface {
+	SaveBinListJson(bins.BinList) error
+	WriteFile([]byte, string) error
+	ReadBinListJson(bins.BinList) error
+	ReadFile(string) ([]byte, error)
+}
+
 func SaveBinListJson(bins bins.BinList) error {
 	data, err := json.Marshal(bins)
 	if err != nil {
@@ -18,7 +25,7 @@ func SaveBinListJson(bins bins.BinList) error {
 		return err
 	}
 	fmt.Println("Данные успешно сохранены")
-	return nil 
+	return nil
 }
 
 func WriteFile(content []byte, name string) error {
