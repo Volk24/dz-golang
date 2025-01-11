@@ -6,14 +6,14 @@ import (
 )
 
 type Bin struct {
-	ID        string
-	Private   bool
-	CreatedAt time.Time
-	Name      string
+	ID        string    `json:"id"`
+	Private   bool      `json:"private"`
+	CreatedAt time.Time `json:"createdAt"`
+	Name      string    `json:"name"`
 }
 
 type BinList struct {
-	bins []Bin
+	Bins []Bin `json:"bins"`
 }
 
 func NewBin(id, name string, private bool) (*Bin, error) {
@@ -35,5 +35,5 @@ func NewBin(id, name string, private bool) (*Bin, error) {
 }
 
 func (bl *BinList) AddBin(bin Bin) {
-	bl.bins = append(bl.bins, bin)
+	bl.Bins = append(bl.Bins, bin)
 }
