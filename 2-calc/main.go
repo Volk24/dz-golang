@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var calculator = map[string] func(string,[]int) (int,error) {
+var calculator = map[string]func(string, []int) (int, error){
 	"AVG": avg,
 	"SUM": sum,
 	"MED": med,
