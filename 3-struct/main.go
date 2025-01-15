@@ -22,7 +22,7 @@ func main() {
 
 	newBin, err := bins.NewBin(id, name, private)
 	if err != nil {
-		fmt.Println(err)
+		logError(err)
 		return
 	}
 
@@ -43,4 +43,8 @@ func promptBool(prompt string) bool {
 	var res string
 	fmt.Scanln(&res)
 	return res == "yes"
+}
+
+func logError(err error) {
+	fmt.Printf("Ошибка: %s \n", err)
 }
