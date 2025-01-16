@@ -1,13 +1,13 @@
 package api
 
 import (
-	"fmt"
 	"struct/config"
 )
 
-func cfg() {
-	cfg := &config.Config{
-		Key: "KEY",
-	}
-	fmt.Println(cfg)//Сделано образно что бы go не ругался!
-}
+func (key *config.Config) postBin() {}
+
+func (key *config.Config) getBin() {}
+
+func (key *config.Config) putBin() {}
+
+func (key *config.Config) deleteBin() {}
