@@ -14,16 +14,12 @@ type Storage interface {
 	ReadFile(string) ([]byte, error)
 }
 
-func SaveBinListJson(bins *bins.BinList) error {
-	data, err := json.Marshal(bins)
+func SerializeToJson(bin *bins.BinList) ([]byte, error) {
+	jsonData, err := json.Marshal(bin)
 	if err != nil {
-		return fmt.Errorf("Ошибка сериализации JSON: %w", err)
+		return nil, fmt.Errorf("Ошибка сериализации JSON: %w", err)
 	}
-	if err := WriteFile(data, "data.json"); err != nil {
-		return fmt.Errorf("Ошибка записи файла: %w", err)
-	}
-	fmt.Println("Данные успешно сохранены")
-	return nil
+	return jsonData, nil
 }
 
 func WriteFile(content []byte, name string) error {
@@ -43,12 +39,33 @@ func WriteFile(content []byte, name string) error {
 	return nil
 }
 
+func SaveBinListJson(bins *bins.BinList) error {
+	data, err := SerializeToJson(bins)
+	if err != nil {
+		return err
+	}
+	if err := WriteFile(data, "data.json"); err != nil {
+		return fmt.Errorf("Ошибка записи файла: %w", err)
+	}
+	fmt.Println("Данные успешно сохранены")
+	return nil
+}
+
+
 func ReadBinListJson(bins *bins.BinList) error {
 	file, err := ReadFile("data.json")
 	if err != nil {
-		return fmt.Errorf("Ошибка чтение файла: %w", err)
+		return err
 	}
-	err = json.Unmarshal(file, bins)
+	err = ParsingJson(file, bins)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ParsingJson(data []byte, bins *bins.BinList) error {
+	err := json.Unmarshal(data, bins)
 	if err != nil {
 		return fmt.Errorf("Ошибка разбора JSON: %w", err)
 	}
