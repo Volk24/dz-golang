@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+type Bins interface {
+	NewBin(string, bool) (*Bin, error)
+	AddBin(Bin)
+}
+
 type Bin struct {
 	ID        string    `json:"id"`
 	Private   bool      `json:"private"`

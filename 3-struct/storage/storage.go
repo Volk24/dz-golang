@@ -7,6 +7,14 @@ import (
 	"struct/bins"
 )
 
+type Storage interface {
+	SaveBinListJson(bins.BinList) error
+	WriteFile([]byte, string) error
+	ReadBinListJson(bins.BinList) error
+	ReadFile(string) ([]byte, error)
+}
+
+
 func SaveBinListJson(bins *bins.BinList) error {
 	data, err := json.Marshal(bins)
 	if err != nil {
@@ -16,7 +24,7 @@ func SaveBinListJson(bins *bins.BinList) error {
 	if err := WriteFile(data, "data.json"); err != nil {
 		return fmt.Errorf("Ошибка записи файла: %w", err)
 	}
-
+	fmt.Println("Данные успешно сохранены")
 	return nil
 }
 
@@ -31,7 +39,6 @@ func WriteFile(content []byte, name string) error {
 	if _, err := os.Stat(name); os.IsNotExist(err) {
 		return fmt.Errorf("Файл %s не существует", name)
 	}
-
 	if err != nil {
 		return fmt.Errorf("Ошибка записи в файл: %w", err)
 	}

@@ -3,7 +3,15 @@ package main
 import (
 	"fmt"
 	"struct/bins"
+	"struct/file"
+	"struct/storage"
 )
+
+type Assembly interface {
+	bins.Bins
+	file.Files
+	storage.Storage
+}
 
 func main() {
 	id := promptData("Введите id")
@@ -14,7 +22,7 @@ func main() {
 
 	newBin, err := bins.NewBin(id, name, private)
 	if err != nil {
-		LogError(err)
+		logError(err)
 		return
 	}
 
@@ -37,6 +45,7 @@ func promptBool(prompt string) bool {
 	return res == "yes"
 }
 
-func LogError(err error) {
-	fmt.Printf("Ошибка: %v\n", err)
+func logError(err error) {
+	fmt.Printf("Ошибка: %s \n", err)
+
 }
