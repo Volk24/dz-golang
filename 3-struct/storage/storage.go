@@ -14,11 +14,13 @@ type Storage interface {
 	ReadFile(string) ([]byte, error)
 }
 
+
 func SaveBinListJson(bins *bins.BinList) error {
 	data, err := json.Marshal(bins)
 	if err != nil {
 		return fmt.Errorf("Ошибка сериализации JSON: %w", err)
 	}
+
 	if err := WriteFile(data, "data.json"); err != nil {
 		return fmt.Errorf("Ошибка записи файла: %w", err)
 	}
@@ -31,6 +33,7 @@ func WriteFile(content []byte, name string) error {
 	if err != nil {
 		return fmt.Errorf("Ошибка создание файла: %w", err)
 	}
+
 	defer file.Close()
 	_, err = file.Write(content)
 	if _, err := os.Stat(name); os.IsNotExist(err) {
