@@ -2,34 +2,24 @@ package main
 
 import (
 	"fmt"
-	"struct/bins"
-	"struct/file"
-	"struct/storage"
 )
 
-type Assembly interface {
-	bins.Bins
-	file.Files
-	storage.Storage
-}
-
 func main() {
-	id := promptData("Введите id")
-	private := promptBool("Приватный? (yes/no)")
-	name := promptData("Введите Имя")
-
-	binList := bins.BinList{}
-
-	newBin, err := bins.NewBin(id, name, private)
-	if err != nil {
-		logError(err)
-		return
-	}
-
-	binList.AddBin(*newBin)
-	fmt.Printf("id: %s, Name: %s, Private: %t, CreatedAt: %s\n", newBin.ID, newBin.Name, newBin.Private, newBin.CreatedAt)
 
 }
+
+// func CreateAccount(vault *api.JsonBin) {
+// 	id := promptData("Введите Id")
+// 	private := promptBool("Будет аккаунт приватным (yes/no)")
+// 	name := promptData("Введите имя")
+
+// 	myAccount, err := bins.NewBin(id, name, private)
+// 	if err != nil {
+// 		log.Panicln(err)
+// 		return
+// 	}
+// 	vault.AddBin(*myAccount)
+// }
 
 func promptData(prompt string) string {
 	fmt.Print(prompt + ": ")

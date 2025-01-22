@@ -5,11 +5,6 @@ import (
 	"time"
 )
 
-type Bins interface {
-	NewBin(string, bool) (*Bin, error)
-	AddBin(Bin)
-}
-
 type Bin struct {
 	ID        string    `json:"id"`
 	Private   bool      `json:"private"`
@@ -37,8 +32,4 @@ func NewBin(id, name string, private bool) (*Bin, error) {
 		Name:      name,
 	}
 	return newBin, nil
-}
-
-func (bl *BinList) AddBin(bin Bin) {
-	bl.Bins = append(bl.Bins, bin)
 }

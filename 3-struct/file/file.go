@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-type Files interface {
-	ReadFileJson(string) ([]byte, error)
-}
-
 func ReadFileJson(name string) ([]byte, error) {
 	var file string
 	fmt.Print("Введите название JSON файла: ")

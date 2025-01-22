@@ -11,16 +11,22 @@ import (
 	"struct/config"
 )
 
-
 const apiBaseUrl = "https://api.jsonbin.io/v3/b"
+
 var apiKey *config.Config
 
-type BinListWrapper struct {
-	*bins.BinList
+type Db interface {
+	SerializeToJson(*bins.BinList) ([]byte, error)
+	ParsingJson([]byte, *bins.BinList) error
 }
 
-func (data *BinListWrapper) CreateBin() (string, error) {
-	jsonData, err := json.Marshal(data)
+type JsonBin struct {
+	bins.BinList
+	db Db
+}
+
+func (data *JsonBin) CreateBin() (string, error) {
+	jsonData, err := data.db.SerializeToJson(&data.BinList)
 	if err != nil {
 		return "", errors.New("Ошибка сереализации JSON файла")
 	}
@@ -30,7 +36,7 @@ func (data *BinListWrapper) CreateBin() (string, error) {
 		return "", errors.New("Ошибка Http запроса")
 	}
 
-	if apiKey == nil{
+	if apiKey == nil {
 		return "", errors.New("Конфигурация API не установлена")
 	}
 	req.Header.Set("Content-type", "application/json")
@@ -63,4 +69,8 @@ func (data *BinListWrapper) CreateBin() (string, error) {
 		return "", errors.New("Ошибка декодирование ответа")
 	}
 	return result.Metadata.ID, nil
+}
+
+func (vault JsonBin) AddBin(bin bins.Bin) {
+	vault.
 }
