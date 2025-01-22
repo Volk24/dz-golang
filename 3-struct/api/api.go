@@ -72,5 +72,5 @@ func (data *JsonBin) CreateBin() (string, error) {
 }
 
 func (vault JsonBin) AddBin(bin bins.Bin) {
-	vault.
+	vault.Bins =append(vault.Bins, bin)
 }
