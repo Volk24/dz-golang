@@ -3,28 +3,35 @@ package main
 import (
 	"fmt"
 	"log"
-	"struct/api"
 	"struct/bins"
+	"struct/storage"
 )
 
 func main() {
-	bin := &api.JsonBin{}
-	data := CreateAccount(bin)
-	fmt.Println(data)
+ vault := bins.BinList{}
+	bin, err := CreateAccount(&vault)
+	if err != nil {
+		logError(err)
+	}
+	saveBin, err := storage.SaveBinListJson(bin)
+	if err != nil {
+		logError(err)
+	}
+	fmt.Println(saveBin)
 }
 
-func CreateAccount(vault *api.JsonBin) *bins.Bin {
+func CreateAccount(vault *bins.BinList) (*bins.Bin, error) {
 	id := promptData("Введите Id")
-	private := promptBool("Будет аккаунт приватным (yes/no)")
+	private := promptBool("Хотите создать приватный аккаунт (yes/no)")
 	name := promptData("Введите имя")
 
 	myAccount, err := bins.NewBin(id, name, private)
 	if err != nil {
 		log.Panicln(err)
-		return nil
 	}
 	vault.AddBin(*myAccount)
-	return myAccount
+	return myAccount, nil
+	
 }
 
 func promptData(prompt string) string {
