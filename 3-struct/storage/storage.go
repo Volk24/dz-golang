@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"struct/bins"
 )
@@ -19,10 +20,7 @@ func NewJsonDb(name string) *JsonDb {
 }
 
 func SaveBinListJson(data *bins.Bin) (*bins.BinList, error) {
-	var name string
-	fmt.Println("Введите название для Json файла (.json):")
-	fmt.Scan(&name)
-
+	name := "data.json"
 	file, err := os.Create(name)
 	if err != nil {
 		return nil, errors.New("Ошибка создание локально файла")
@@ -34,12 +32,35 @@ func SaveBinListJson(data *bins.Bin) (*bins.BinList, error) {
 		return nil, errors.New("Ошибка сериализация данный")
 	}
 
-	encoder := json.NewEncoder(file)
-	if err := encoder.Encode(jsonData); err != nil {
-		return nil, errors.New("Ошибка при записи в JSON файл")
+	if _, err := file.Write(jsonData); err != nil {
+		return nil, errors.New("Ошибка записи в файл")
 	}
 	fmt.Printf("Данные сохранены в %s файл", name)
 	return &bins.BinList{
 		Bins: []bins.Bin{},
 	}, nil
+}
+
+func ReadBinList(bin *bins.BinList) (*bins.BinList, error) {
+	filename := "data.json"
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, errors.New("невозможно открыть файл")
+	}
+
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		return nil, errors.New("чтения файла ")
+	}
+
+	if err := json.Unmarshal(data, bin); err != nil {
+		return nil, errors.New("десериализации данных ")
+	}
+	return &bins.BinList{
+		Bins: []bins.Bin{},
+	}, nil
+
 }

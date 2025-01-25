@@ -8,7 +8,8 @@ import (
 )
 
 func main() {
- vault := bins.BinList{}
+	vault := bins.BinList{}
+
 	bin, err := CreateAccount(&vault)
 	if err != nil {
 		logError(err)
@@ -17,7 +18,12 @@ func main() {
 	if err != nil {
 		logError(err)
 	}
-	fmt.Println(saveBin)
+
+	data, err := storage.ReadBinList(saveBin)
+	if err != nil {
+		logError(err)
+	}
+	fmt.Println(data)
 }
 
 func CreateAccount(vault *bins.BinList) (*bins.Bin, error) {
@@ -31,7 +37,7 @@ func CreateAccount(vault *bins.BinList) (*bins.Bin, error) {
 	}
 	vault.AddBin(*myAccount)
 	return myAccount, nil
-	
+
 }
 
 func promptData(prompt string) string {
