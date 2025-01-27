@@ -4,63 +4,45 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"struct/bins"
 )
 
-type JsonDb struct {
-	filename string
-}
-
-func NewJsonDb(name string) *JsonDb {
-	return &JsonDb{
-		filename: name,
-	}
-}
-
 func SaveBinListJson(data *bins.Bin) (*bins.BinList, error) {
-	name := "data.json"
-	file, err := os.Create(name)
+	filename := "data.json"
+	file, err := os.Create(filename)
 	if err != nil {
 		return nil, errors.New("Ошибка создание локально файла")
 	}
 	defer file.Close()
 
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return nil, errors.New("Ошибка сериализация данный")
+	jsonEncod := json.NewEncoder(file)
+	if err := jsonEncod.Encode(data); err != nil {
+		return nil, errors.New("при записи JSON-данных")
 	}
 
-	if _, err := file.Write(jsonData); err != nil {
-		return nil, errors.New("Ошибка записи в файл")
-	}
-	fmt.Printf("Данные сохранены в %s файл", name)
+	fmt.Printf("Данные сохранены в %s файл", filename)
 	return &bins.BinList{
 		Bins: []bins.Bin{},
 	}, nil
 }
 
-func ReadBinList(bin *bins.BinList) (*bins.BinList, error) {
+func ReadBinList(bin *bins.BinList) error {
 	filename := "data.json"
 
 	file, err := os.Open(filename)
 	if err != nil {
-		return nil, errors.New("невозможно открыть файл")
+		return errors.New("невозможно открыть файл")
 	}
 
 	defer file.Close()
 
-	data, err := io.ReadAll(file)
-	if err != nil {
-		return nil, errors.New("чтения файла ")
+	jsonDecode := json.NewDecoder(file)
+	if err := jsonDecode.Decode(bin); err != nil {
+		return errors.New("декодирования")
 	}
 
-	if err := json.Unmarshal(data, bin); err != nil {
-		return nil, errors.New("десериализации данных ")
-	}
-	return &bins.BinList{
-		Bins: []bins.Bin{},
-	}, nil
+	fmt.Printf("Успешно прочитано: %v\n", bin)
 
+	return nil
 }

@@ -3,9 +3,14 @@ package main
 import (
 	"fmt"
 	"log"
+	"struct/api"
 	"struct/bins"
 	"struct/storage"
 )
+
+type jsonBin interface {
+	CreateBin() (*jsonBin, error)
+}
 
 func main() {
 	vault := bins.BinList{}
@@ -19,11 +24,9 @@ func main() {
 		logError(err)
 	}
 
-	data, err := storage.ReadBinList(saveBin)
-	if err != nil {
-		logError(err)
-	}
-	fmt.Println(data)
+	jsonBin, err := api.CreateBin(saveBin)
+
+	fmt.Println(jsonBin)
 }
 
 func CreateAccount(vault *bins.BinList) (*bins.Bin, error) {
