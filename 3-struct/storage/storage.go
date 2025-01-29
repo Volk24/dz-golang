@@ -17,6 +17,7 @@ func SaveBinListJson(data *bins.Bin) (*bins.BinList, error) {
 	if err != nil {
 		return nil, errors.New("Ошибка создание локально файла")
 	}
+
 	defer file.Close()
 
 	jsonEncod := json.NewEncoder(file)
