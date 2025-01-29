@@ -9,7 +9,7 @@ type Config struct {
 	Key string
 }
 
-func readEnv(key string) (*Config, error) {
+func ReadEnv(key string) (*Config, error) {
 	if key == "" {
 		return nil, fmt.Errorf("Имя ENV не может быть пусты")
 	}
@@ -20,6 +20,6 @@ func readEnv(key string) (*Config, error) {
 	}
 
 	return &Config{
-		Key: key,
+		Key: envKey,
 	}, nil
 }

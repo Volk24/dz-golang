@@ -5,17 +5,23 @@ import (
 	"log"
 	"struct/api"
 	"struct/bins"
+	"struct/config"
 	"struct/storage"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	vault := bins.BinList{}
 	err := godotenv.Load()
 	if err != nil {
-		logError(err)
+		log.Fatalf("Ошибка загрузки .env файла: %v", err)
 	}
+	apiKey, err := config.ReadEnv("API_KEY")
+	if err != nil {
+		log.Fatalf("Ошибка чтения API_KEY: %v", err)
+	}
+	apiClient := api.NewAPIClient(apiKey)
+	vault := bins.BinList{}
 	bin, err := CreateAccount(&vault)
 	if err != nil {
 		logError(err)
@@ -24,11 +30,15 @@ func main() {
 	if err != nil {
 		logError(err)
 	}
-	metaData, err := api.CreateBin(localBin)
+	jsonBin, err := apiClient.CreateBin(localBin)
 	if err != nil {
 		logError(err)
 	}
-	fmt.Println(metaData)
+	jsonBins, err :=api.SaveJsonBin(jsonBin)
+	if err != nil {
+		logError(err)
+	}
+	fmt.Println(jsonBins)
 }
 
 func CreateAccount(vault *bins.BinList) (*bins.Bin, error) {
