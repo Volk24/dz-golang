@@ -9,8 +9,11 @@ import (
 )
 
 func SaveBinListJson(data *bins.Bin) (*bins.BinList, error) {
-	filename := "data.json"
-	file, err := os.Create(filename)
+	var name string
+	fmt.Println("Введите названия для JSON файла: ")
+	fmt.Scan(&name)
+
+	file, err := os.Create(name)
 	if err != nil {
 		return nil, errors.New("Ошибка создание локально файла")
 	}
@@ -21,9 +24,9 @@ func SaveBinListJson(data *bins.Bin) (*bins.BinList, error) {
 		return nil, errors.New("при записи JSON-данных")
 	}
 
-	fmt.Printf("Данные сохранены в %s файл", filename)
+	fmt.Printf("Данные сохранены в %s файл", name)
 	return &bins.BinList{
-		Bins: []bins.Bin{},
+		Bins: []bins.Bin{*data},
 	}, nil
 }
 

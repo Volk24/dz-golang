@@ -8,50 +8,60 @@ import (
 	"net/http"
 	"struct/bins"
 	"struct/config"
+	"time"
 )
 
-const apiBaseUrl = "https://api.jsonbin.io/v3/b"
+const (
+	apiBaseUrl = "https://api.jsonbin.io/v3/b"
+)
 
-var apiKey = &config.Config{Key: "KEY"}
+var apiKey = config.Config{}
 
-type JsonBin struct {
-	JsonBins []bins.BinList
-	MetaData struct {
-		ID       string `json:"id"`
-	} `json:"metaData"`
+type MetaData struct {
+	ParentId  string    `json:"parentId"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
-func CreateBin(bin *bins.BinList) (*JsonBin, error) {
-	jsonData, err := json.Marshal(bin)
-	if err != nil {
-		return nil, errors.New("Ошибка преобразование в JSON формат")
+type JsonBin struct {
+	BinList  bins.BinList
+	MetaData MetaData `json:"metaData"`
+}
+
+func CreateBin(data *bins.BinList) (*MetaData, error) {
+	if data == nil {
+		return nil, errors.New("Ошибка данные в BinList пустые")
 	}
-	req, err := http.NewRequest("POST", apiBaseUrl, bytes.NewBuffer(jsonData))
+	dataJson, err := json.Marshal(data)
+	if err != nil {
+		return nil, errors.New("Ошибка сереализаци данных ")
+	}
+
+	req, err := http.NewRequest("POST", apiBaseUrl, bytes.NewBuffer(dataJson))
 	if err != nil {
 		return nil, errors.New("Ошибка при создание запроса")
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Master-Key", apiKey.Key)
+
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, errors.New("Ошибка при создание запроса клиента")
 	}
 	defer resp.Body.Close()
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, errors.New("Ошибка прочтения ответа")
 	}
-	var jsonBin JsonBin
-	if err := json.Unmarshal(body, &jsonBin); err != nil {
+
+	metaDta := MetaData{
+		ParentId:  string(body),
+		CreatedAt: time.Now(),
+	}
+
+	if err := json.Unmarshal(body, &metaDta); err != nil {
 		return nil, errors.New("Ошибка парсинга JSON данных")
 	}
-	return &JsonBin{
-		JsonBins: []bins.BinList{},
-		MetaData: jsonBin.MetaData,
-}, nil
+	return &MetaData{}, nil
 }
-func (vault *JsonBin) AddBin(bin bins.BinList) {
-	vault.JsonBins = append(vault.JsonBins, bin)
-}
-

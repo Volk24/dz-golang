@@ -6,27 +6,29 @@ import (
 	"struct/api"
 	"struct/bins"
 	"struct/storage"
-)
 
-type jsonBin interface {
-	CreateBin() (*jsonBin, error)
-}
+	"github.com/joho/godotenv"
+)
 
 func main() {
 	vault := bins.BinList{}
-
+	err := godotenv.Load()
+	if err != nil {
+		logError(err)
+	}
 	bin, err := CreateAccount(&vault)
 	if err != nil {
 		logError(err)
 	}
-	saveBin, err := storage.SaveBinListJson(bin)
+	localBin, err := storage.SaveBinListJson(bin)
 	if err != nil {
 		logError(err)
 	}
-
-	jsonBin, err := api.CreateBin(saveBin)
-
-	fmt.Println(jsonBin)
+	metaData, err := api.CreateBin(localBin)
+	if err != nil {
+		logError(err)
+	}
+	fmt.Println(metaData)
 }
 
 func CreateAccount(vault *bins.BinList) (*bins.Bin, error) {
