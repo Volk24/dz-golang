@@ -8,6 +8,7 @@ import (
 	"struct/bins"
 )
 
+
 func SaveBinListJson(data *bins.Bin) (*bins.BinList, error) {
 	var name string
 	fmt.Println("Введите названия для сохранение локального JSON файла: ")
@@ -17,6 +18,7 @@ func SaveBinListJson(data *bins.Bin) (*bins.BinList, error) {
 	if err != nil {
 		return nil, errors.New("Ошибка создание локально файла")
 	}
+
 	defer file.Close()
 
 	jsonEncod := json.NewEncoder(file)

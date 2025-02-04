@@ -122,4 +122,5 @@ func promptBool(prompt string) bool {
 
 func logError(err error) {
 	fmt.Printf("Ошибка: %s \n", err)
+
 }
