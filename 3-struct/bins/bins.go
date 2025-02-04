@@ -12,6 +12,10 @@ type Bin struct {
 	Name      string    `json:"name"`
 }
 
+func (b Bin) ReadFileJson(name string) any {
+	panic("unimplemented")
+}
+
 type BinList struct {
 	Bins []Bin `json:"bins"`
 }

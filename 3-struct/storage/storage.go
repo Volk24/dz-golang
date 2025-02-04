@@ -10,7 +10,7 @@ import (
 
 func SaveBinListJson(data *bins.Bin) (*bins.BinList, error) {
 	var name string
-	fmt.Println("Введите названия для JSON файла: ")
+	fmt.Println("Введите названия для сохранение локального JSON файла: ")
 	fmt.Scan(&name)
 
 	file, err := os.Create(name)
