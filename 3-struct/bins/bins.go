@@ -5,16 +5,15 @@ import (
 	"time"
 )
 
-type Bins interface {
-	NewBin(string, bool) (*Bin, error)
-	AddBin(Bin)
-}
-
 type Bin struct {
 	ID        string    `json:"id"`
 	Private   bool      `json:"private"`
 	CreatedAt time.Time `json:"createdAt"`
 	Name      string    `json:"name"`
+}
+
+func (b Bin) ReadFileJson(name string) any {
+	panic("unimplemented")
 }
 
 type BinList struct {
@@ -23,11 +22,11 @@ type BinList struct {
 
 func NewBin(id, name string, private bool) (*Bin, error) {
 	if id == "" {
-		return nil, errors.New("INVALID_ID")
+		return nil, errors.New("Неверный id")
 	}
 
 	if name == "" {
-		return nil, errors.New("INVALID_NAME")
+		return nil, errors.New("Неверное имя")
 	}
 
 	newBin := &Bin{
@@ -39,6 +38,6 @@ func NewBin(id, name string, private bool) (*Bin, error) {
 	return newBin, nil
 }
 
-func (bl *BinList) AddBin(bin Bin) {
-	bl.Bins = append(bl.Bins, bin)
+func (vault *BinList) AddBin(bin Bin) {
+	vault.Bins = append(vault.Bins, bin)
 }

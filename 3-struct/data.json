@@ -1,0 +1,16 @@
+{
+    "Bins": {
+        "bins": [
+            {
+                "id": "1",
+                "private": false,
+                "createdAt": "2025-02-04T14:08:44.386034532+03:00",
+                "name": "Boom"
+            }
+        ]
+    },
+    "metadata": {
+        "id": "67a1f556acd3cb34a8d8134e",
+        "createdAt": "2025-02-04T11:09:10.617Z"
+    }
+}

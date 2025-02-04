@@ -2,22 +2,24 @@ package config
 
 import (
 	"fmt"
-
-	"github.com/qiangxue/go-env"
+	"os"
 )
 
 type Config struct {
 	Key string
 }
 
-func readEnv(key string) (*Config, error) {
+func ReadEnv(key string) (*Config, error) {
 	if key == "" {
 		return nil, fmt.Errorf("Имя ENV не может быть пусты")
 	}
-	if err := env.Load(key); err != nil {
-		return nil, fmt.Errorf("Ошибка загрузки ENV %s: %w", key, err)
+
+	envKey := os.Getenv(key)
+	if envKey == "" {
+		return nil, fmt.Errorf("переменная окружения %s не найдена или пуста", envKey)
 	}
+
 	return &Config{
-		Key: key,
+		Key: envKey,
 	}, nil
 }
